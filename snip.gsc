@@ -52,6 +52,15 @@ onPlayerSpawned()
 		if(level.enbaleAntiCamp) self thread watch_anti_camp();
 		if(level.enableAntiHardScop) self thread monitorads(level.scopTime);
 		if(level.enableRestockAmmo) self thread ammoLoop();
+		//PERKS:
+		self clearperks();
+		self setperk("specialty_healthregen");
+		self setperk("specialty_fastreload");
+		self setperk("specialty_fallheight");
+		self setperk("specialty_fastads");
+		self setperk("specialty_longersprint");
+		self setperk("specialty_scavenger");
+
 	}
 }
 
