@@ -18,6 +18,7 @@ init()
 	level.scopTime = 10; // time to take unscop 
 	level.enableRestockAmmo = true; // give ammo every time he shot fire 
 	level.enbaleAntiCamp = true;
+    level.enableForcePerks = true;
 	level.meleeKnifeRange = 5; // 0 - 100 rang of melee knife
 }
 /*
@@ -53,17 +54,75 @@ onPlayerSpawned()
 		if(level.enableAntiHardScop) self thread monitorads(level.scopTime);
 		if(level.enableRestockAmmo) self thread ammoLoop();
 		//PERKS:
-		self clearperks();
-		self setperk("specialty_healthregen");
-		self setperk("specialty_fastreload");
-		self setperk("specialty_fallheight");
-		self setperk("specialty_fastads");
-		self setperk("specialty_longersprint");
-		self setperk("specialty_scavenger");
+        if(level.enableForcePerks) self thread setPerks();
+	    // self thread emulateSpecialist();
 
 	}
 }
 
+
+setPerks() {
+    	self endon("disconnect");
+	    self endon("death");
+
+		self clearperks();
+        wait .1;
+        self clearperks();
+        self iprintlnbold("^1Perks cleared");
+        wait .5;
+        self iPrintLnBold("^3Perks has been ^1Sets");
+		self setperk("specialty_longersprint");
+        self setperk("specialty_unlimitedsprint");
+		self setperk("specialty_fastreload");
+		self setperk("specialty_bulletaccuracy");
+        self setperk("specialty_fallheight");
+        self setperk("specialty_fastads");
+        self setperk("specialty_fastequipmentuse");
+        self setperk("specialty_fastladderclimb");
+        self setperk("specialty_fastmantle");
+        self setperk("specialty_fastmeleerecovery");
+        self setperk("specialty_fastreload");
+        self setperk("specialty_scavenger");
+}
+
+emulateSpecialist() {
+	self endon("disconnect");
+	self endon("death");
+
+	kills = 0;
+	self.kill_ui setText("Kills: 0");
+
+	while(true) {
+		self waittill("killed_enemy");
+		kills++;
+		self.kill_ui setText("Kills: " + kills);
+		switch(kills) {
+			case 1:
+				self iPrintLnBold("Given ^4Scavenger");
+				self setperk("specialty_scavenger");
+				break;
+
+			case 3:
+				self iPrintLnBold("Given ^4Sleight of Hand");
+				self setperk("specialty_fastreload");
+				break;
+
+			case 5:
+				self iPrintLnBold("Given ^2Steady Aim");
+				self setperk("specialty_bulletaccuracy");
+				break;
+
+			case 7:
+				self iPrintLnBold("Given ^3ALL ^7Perks");
+				self setperk("specialty_fastreload"); //sleight pro - ads speed
+				break;
+		}
+	}
+}
+				// self maps\mp\perks\_perks::givePerk(getProPerk("specialty_coldblooded")); //no red name
+				// self maps\mp\perks\_perks::givePerk("specialty_localjammer"); //scrambler
+				// self maps\mp\perks\_perks::givePerk(getProPerk("specialty_heartbreaker")); //ninja pro - silent footsteps
+				// self maps\mp\perks\_perks::givePerk(getProPerk("specialty_detectexplosive")); //sitrep pro - louder enemy footsteps
 watch_anti_camp()
 {
 	self endon("disconnect");
